@@ -16,7 +16,7 @@ public static class DependencyInjection
     {
         services.AddControllers();
 
-        services.AddAuthConfig();
+        services.AddAuthConfig(configuration);
 
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -44,7 +44,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddMapsterConfig(this IServiceCollection services) 
+    private static IServiceCollection AddMapsterConfig(this IServiceCollection services)
     {
         var mappingConfig = TypeAdapterConfig.GlobalSettings;
         mappingConfig.Scan(Assembly.GetExecutingAssembly());
@@ -63,12 +63,27 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddAuthConfig(this IServiceCollection services)
+    private static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IJwtProvider, JwtProvider>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        //services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+
+        
+        /// services.AddOptions<JwtOptions>()           ==>>       Adds the IOptions<JwtOptions> service (DI) container.
+        /// BindConfiguration(JwtOptions.SectionName)   ==>>       Binds a specific section of the configuration file (appsettings.json) to the JwtOptions class.
+        /// ValidateOnStart();                          ==>>       Validates the options at application startup instead of waiting until the options are first requested.
+        
+        services.AddOptions<JwtOptions>() 
+            .BindConfiguration(JwtOptions.SectionName) 
+            .ValidateDataAnnotations()
+            .ValidateOnStart(); 
+
+
+        var JwtSettings = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
 
         services.AddAuthentication(options =>
         {
@@ -84,9 +99,9 @@ public static class DependencyInjection
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("J7MfAb4WcAIMkkigVtIepIILOVJEjAcB")),
-                ValidIssuer = "SurveyBasketApp",
-                ValidAudience = "SurveyBasketApp users"
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings?.Key!)),
+                ValidIssuer = JwtSettings?.Issuer,
+                ValidAudience = JwtSettings?.Audience
             };
         });
 
