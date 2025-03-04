@@ -16,6 +16,21 @@ public static class DependencyInjection
     {
         services.AddControllers();
 
+        var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+        services.AddCors(options =>
+        options.AddDefaultPolicy(builder =>
+            builder.WithOrigins(allowedOrigins!)
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials()
+                   ));
+        //options.AddPolicy("MyPolicy", builder =>
+        //             builder.WithOrigins(allowedOrigins!)
+        //                    .AllowAnyMethod()
+        //                    .AllowAnyHeader()
+        //));
+
         services.AddAuthConfig(configuration);
 
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
@@ -72,15 +87,15 @@ public static class DependencyInjection
 
         //services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 
-        
+
         /// services.AddOptions<JwtOptions>()           ==>>       Adds the IOptions<JwtOptions> service (DI) container.
         /// BindConfiguration(JwtOptions.SectionName)   ==>>       Binds a specific section of the configuration file (appsettings.json) to the JwtOptions class.
         /// ValidateOnStart();                          ==>>       Validates the options at application startup instead of waiting until the options are first requested.
-        
-        services.AddOptions<JwtOptions>() 
-            .BindConfiguration(JwtOptions.SectionName) 
+
+        services.AddOptions<JwtOptions>()
+            .BindConfiguration(JwtOptions.SectionName)
             .ValidateDataAnnotations()
-            .ValidateOnStart(); 
+            .ValidateOnStart();
 
 
         var JwtSettings = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();

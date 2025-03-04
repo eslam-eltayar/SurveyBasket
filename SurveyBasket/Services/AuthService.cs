@@ -123,4 +123,44 @@ public class AuthService(UserManager<ApplicationUser> userManager, IJwtProvider 
 
         return true;
     }
+
+    public async Task<AuthResponse?> RegisterAsync(string email, string password, CancellationToken cancellationToken = default)
+    {
+        var user = new ApplicationUser
+        {
+            Email = email,
+            UserName = email,
+        };
+
+        var result = await _userManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+            return null;
+
+        var (token, expiresIn) = _jwtProvider.GenerateToken(user);
+
+        var refreshToken = GenerateRefreshToken();
+
+        var refreshTokenExpiration = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
+
+        user.RefreshTokens.Add(new RefreshToken
+        {
+            Token = refreshToken,
+            ExpiresOn = refreshTokenExpiration,
+        });
+
+        await _userManager.UpdateAsync(user);
+
+
+        return new AuthResponse(
+            user.Id,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            token,
+            expiresIn,
+            refreshToken,
+            refreshTokenExpiration
+            );
+    }
 }

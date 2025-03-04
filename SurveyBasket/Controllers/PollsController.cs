@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace SurveyBasket.Controllers;
 
+//[DisableCors] // Disable CORS for this controller / Action
+//[EnableCors("AllowAll")] // Enable CORS for this controller / Action
+
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class PollsController(IPollService pollService) : ControllerBase
 {
     private readonly IPollService _pollService = pollService;

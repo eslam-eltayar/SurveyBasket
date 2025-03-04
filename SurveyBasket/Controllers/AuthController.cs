@@ -18,6 +18,13 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> jwtOp
         return authResult is null ? BadRequest("Invalid email/password") : Ok(authResult);
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
+    {
+        var authResult = await _authService.RegisterAsync(request.Email, request.Password, cancellationToken);
+        return authResult is null ? BadRequest("Email already exists") : Ok(authResult);
+    }
+
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
