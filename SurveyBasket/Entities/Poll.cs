@@ -8,4 +8,7 @@ public sealed class Poll : AuditableEntity
     public bool IsPublished { get; set; }
     public DateOnly StartsAt { get; set; }
     public DateOnly EndsAt { get; set; }
+
+
+    public string Slug { get; set; } = string.Empty; // Unique URL-friendly string
 }

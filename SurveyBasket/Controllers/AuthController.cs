@@ -15,7 +15,7 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> jwtOp
     {
         var authResult = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
-        return authResult is null ? BadRequest("Invalid email/password") : Ok(authResult);
+        return authResult.IsSuccess ? Ok(authResult.Value) : BadRequest(authResult.Error);
     }
 
     [HttpPost("register")]

@@ -6,5 +6,6 @@ public record PollResponse(
     string Summary,
     bool IsPublished,
     DateOnly StartsAt,
-    DateOnly EndsAt
+    DateOnly EndsAt,
+    string Slug
 );
