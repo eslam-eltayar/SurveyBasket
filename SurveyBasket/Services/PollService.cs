@@ -1,11 +1,4 @@
-﻿using Microsoft.IdentityModel.Logging;
-using SurveyBasket.Entities;
-using SurveyBasket.Errors;
-using SurveyBasket.Helpers;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
-
-namespace SurveyBasket.Services;
+﻿namespace SurveyBasket.Services;
 
 public class PollService(ApplicationDbContext context) : IPollService
 {

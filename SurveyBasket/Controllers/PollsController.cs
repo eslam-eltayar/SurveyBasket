@@ -21,7 +21,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? Ok(result.Value)
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            : result.ToProblem();
     }
 
     [HttpGet("{id}")]
@@ -31,7 +31,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? Ok(result.Value)
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            : result.ToProblem();
     }
 
     [HttpPost("")]
@@ -42,7 +42,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess ?
             CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
-            :result.ToProblem(StatusCodes.Status400BadRequest);
+            :result.ToProblem();
     }
 
     [HttpPut("{id}")]
@@ -53,7 +53,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent()
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            : result.ToProblem();
     }
 
     [HttpDelete("{id}")]
@@ -63,7 +63,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent()
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            : result.ToProblem();
     }
 
     [HttpPut("{id}/togglePublish")]
@@ -73,6 +73,6 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent()
-            : result.ToProblem(StatusCodes.Status404NotFound);
+            : result.ToProblem();
     }
 }
