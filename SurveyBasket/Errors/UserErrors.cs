@@ -5,7 +5,5 @@ namespace SurveyBasket.Errors
     {
         public static readonly Error InvalidCredentials 
             = new("User.InvalidCredentials", "Invalid email/password");
-
-
     }
 }

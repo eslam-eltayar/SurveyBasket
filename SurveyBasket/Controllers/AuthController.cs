@@ -15,7 +15,9 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> jwtOp
     {
         var authResult = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
-        return authResult.IsSuccess ? Ok(authResult.Value) : BadRequest(authResult.Error);
+        return authResult.IsSuccess
+            ? Ok(authResult.Value)
+            : authResult.ToProblem(StatusCodes.Status401Unauthorized);
     }
 
     [HttpPost("register")]
