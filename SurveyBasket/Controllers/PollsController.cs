@@ -17,6 +17,8 @@ public class PollsController(IPollService pollService) : ControllerBase
 
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
+        //throw new Exception("This is a test exception");
+
         var result = await _pollService.GetAllAsync(cancellationToken);
 
         return result.IsSuccess

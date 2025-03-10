@@ -1,5 +1,8 @@
 ﻿namespace SurveyBasket.Abstractions
 {
+    /// <summary>
+    /// Result class for returning success or failure results to the client.
+    /// </summary>
     public static class ResultExtensions
     {
         public static ObjectResult ToProblem(this Result result)

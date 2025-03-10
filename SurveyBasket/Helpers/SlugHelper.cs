@@ -1,5 +1,8 @@
 ﻿namespace SurveyBasket.Helpers
 {
+    /// <summary>
+    /// Helper class for generating slugs from strings.
+    /// </summary>
     public static class SlugHelper
     {
         public static string GenerateSlug(string title)

@@ -1,5 +1,8 @@
 ﻿namespace SurveyBasket.Abstractions
 {
+    /// <summary>
+    /// Result class for returning success or failure results to the client.
+    /// </summary>
     public class Result
     {
         public Result(bool isSuccess, Error error)
@@ -24,6 +27,11 @@
         public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
         public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error);
     }
+
+    /// <summary>
+    /// Result class for returning success or failure results to the client with a value.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
 
     public class Result<TValue> : Result
     {

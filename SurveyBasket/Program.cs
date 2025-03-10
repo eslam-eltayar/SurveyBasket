@@ -22,4 +22,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseExceptionHandler(); // Use the global exception handler
+
 app.Run();
