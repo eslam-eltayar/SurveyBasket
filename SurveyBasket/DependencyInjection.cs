@@ -26,11 +26,13 @@ public static class DependencyInjection
                    .AllowAnyHeader()
                    .AllowCredentials()
                    ));
-        //options.AddPolicy("MyPolicy", builder =>
-        //             builder.WithOrigins(allowedOrigins!)
-        //                    .AllowAnyMethod()
-        //                    .AllowAnyHeader()
-        //));
+
+
+        ///options.AddPolicy("MyPolicy", builder =>
+        ///             builder.WithOrigins(allowedOrigins!)
+        ///                    .AllowAnyMethod()
+        ///                    .AllowAnyHeader()
+        ///));
 
         services.AddAuthConfig(configuration);
 
