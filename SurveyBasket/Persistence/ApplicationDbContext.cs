@@ -12,6 +12,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Poll> Polls { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<Answer> Answers { get; set; }
+    public DbSet<Vote> Votes { get; set; }
+    public DbSet<VoteAnswer> VoteAnswers { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         /// This code is used to prevent cascade delete in the database.
         /// fk.IsOwnership => is used to prevent cascade delete on owned entities.
         /// </summary>
+        
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()
             .SelectMany(t => t.GetForeignKeys())
             .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership);
@@ -35,6 +39,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        ///<summary>
+        /// This code is used to get the current user id and set it to the CreatedById and UpdatedById properties of the AuditableEntity.
+        ///</summary>
+
         var entries = ChangeTracker.Entries<AuditableEntity>();
 
         foreach (var entityEntry in entries)
