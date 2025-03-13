@@ -1,6 +1,11 @@
-﻿namespace SurveyBasket.Contracts.Questions
+﻿using SurveyBasket.Contracts.Answers;
+
+namespace SurveyBasket.Contracts.Questions
 {
-    public class QuestionResponse
-    {
-    }
+    public record QuestionResponse(
+        int Id,
+        string Content,
+        IEnumerable<AnswerResponse> Answers
+    );
+
 }
