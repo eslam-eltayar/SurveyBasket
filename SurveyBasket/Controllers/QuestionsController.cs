@@ -39,6 +39,16 @@ namespace SurveyBasket.Controllers
                 : result.ToProblem();
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int pollId, [FromRoute] int id,[FromBody] QuestionRequest request, CancellationToken cancellationToken = default)
+        {
+            var result = await _questionService.UpdateAsync(pollId,id, request, cancellationToken);
+
+            return result.IsSuccess
+                ? NoContent()
+                : result.ToProblem();
+        }
+
         [HttpPut("{id}/toggleStatus")]
         public async Task<IActionResult> ToggleStatus([FromRoute] int pollId, [FromRoute] int id, CancellationToken cancellationToken)
         {

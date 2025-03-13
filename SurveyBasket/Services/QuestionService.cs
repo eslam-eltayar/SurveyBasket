@@ -84,5 +84,46 @@ namespace SurveyBasket.Services
 
             return Result.Success();
         }
+
+        public async Task<Result> UpdateAsync(int pollId, int id, QuestionRequest request, CancellationToken cancellationToken = default)
+        {
+            var questionIsExist = await _context
+                .Questions
+                .AnyAsync(
+                q => q.PollId == pollId
+                && q.Id != id
+                && q.Content == request.Content,
+                cancellationToken);
+            // check if the question is exist in the database with the same content and poll.
+
+            if (questionIsExist)
+                return Result.Failure(QuestionErrors.DuplicatedQuestionContent);
+
+            var question = await _context.Questions
+                .Include(x => x.Answers).SingleOrDefaultAsync(x => x.PollId == pollId && x.Id == id, cancellationToken);
+
+            if (question is null)
+                return Result.Failure(QuestionErrors.QuestionNotFound);
+
+            question.Content = request.Content;
+
+            // current answers
+            var currentAnswers = question.Answers.Select(a => a.Content).ToList();
+
+            // new answers
+            var newAnswers = request.Answers.Except(currentAnswers).ToList();
+
+            newAnswers.ForEach(answer => question.Answers.Add(new Answer { Content = answer }));
+
+            question.Answers.ToList().ForEach(answer =>
+            {
+                answer.IsActive = request.Answers.Contains(answer.Content);
+                // if the answer is in the request answers, then it's active. else, it's not active.
+            });
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
+        }
     }
 }
