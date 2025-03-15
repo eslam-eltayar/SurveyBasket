@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using SurveyBasket.Extensions;
 using System.Reflection;
-using System.Security.Claims;
 
 namespace SurveyBasket.Persistence;
 
@@ -24,7 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         /// This code is used to prevent cascade delete in the database.
         /// fk.IsOwnership => is used to prevent cascade delete on owned entities.
         /// </summary>
-        
+
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()
             .SelectMany(t => t.GetForeignKeys())
             .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership);
@@ -47,7 +47,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         foreach (var entityEntry in entries)
         {
-            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty; // Get Current User Id
+            var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId()!; // Get Current User Id
 
             if (entityEntry.State == EntityState.Added)
             {

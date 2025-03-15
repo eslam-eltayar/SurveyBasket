@@ -14,12 +14,23 @@ public class PollsController(IPollService pollService) : ControllerBase
     private readonly IPollService _pollService = pollService;
 
     [HttpGet("")]
-
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         //throw new Exception("This is a test exception");
 
         var result = await _pollService.GetAllAsync(cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+
+    [HttpGet("current")]
+    public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
+    {
+        //throw new Exception("This is a test exception");
+
+        var result = await _pollService.GetCurrentAsync(cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -44,7 +55,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
         return result.IsSuccess ?
             CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
-            :result.ToProblem();
+            : result.ToProblem();
     }
 
     [HttpPut("{id}")]
