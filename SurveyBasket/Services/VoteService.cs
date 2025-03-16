@@ -27,8 +27,17 @@ namespace SurveyBasket.Services
                 .Select(x => x.Id)
                 .ToListAsync(cancellationToken);
 
-            if(!request.Answers.Select(req=> req.QuestionId).SequenceEqual(availableQuestions))
+            if (!request.Answers.Select(req => req.QuestionId).SequenceEqual(availableQuestions))
                 return Result.Failure(VoteErrors.InvalidQuestion);
+
+            var answerIds = request.Answers.Select(a => a.AnswerId).ToList();
+            var validAnswerIds = await _context.Answers
+                .Where(a => answerIds.Contains(a.Id))
+                .Select(a => a.Id)
+                .ToListAsync(cancellationToken);
+
+            if (!answerIds.SequenceEqual(validAnswerIds))
+                return Result.Failure(VoteErrors.InvalidAnswer);
 
             var vote = new Vote
             {
