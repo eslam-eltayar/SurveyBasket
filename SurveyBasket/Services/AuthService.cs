@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SurveyBasket.Abstractions;
 using SurveyBasket.Authentication;
-using SurveyBasket.Errors;
 using System.Security.Cryptography;
 
 namespace SurveyBasket.Services;
