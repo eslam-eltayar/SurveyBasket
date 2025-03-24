@@ -17,6 +17,8 @@ public static class DependencyInjection
     {
         services.AddControllers();
 
+        services.AddHybridCache();
+
         var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
 
         services.AddCors(options =>
@@ -52,8 +54,6 @@ public static class DependencyInjection
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IVoteService, VoteService>();
         services.AddScoped<IResultService, ResultService>();
-
-        services.AddScoped<ICacheService, CacheService>();
 
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
