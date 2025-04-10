@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using SurveyBasket.Settings;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Hangfire;
 
 namespace SurveyBasket;
 
@@ -40,6 +41,8 @@ public static class DependencyInjection
 
         services.AddAuthConfig(configuration);
 
+        services.AddBackgroundJobsConfig(configuration);
+
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -57,8 +60,9 @@ public static class DependencyInjection
         services.AddScoped<IVoteService, VoteService>();
         services.AddScoped<IResultService, ResultService>();
         services.AddScoped<IEmailSender, EmailService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
-        
+
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
@@ -140,6 +144,21 @@ public static class DependencyInjection
             options.SignIn.RequireConfirmedEmail = true;
             options.User.RequireUniqueEmail = true;
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services, IConfiguration configuration)
+    {
+
+        services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        // Add the processing server as IHostedService
+        services.AddHangfireServer();
 
         return services;
     }
