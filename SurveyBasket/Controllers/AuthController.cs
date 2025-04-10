@@ -22,13 +22,6 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
             : authResult.ToProblem();
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
-    {
-        var authResult = await _authService.RegisterAsync(request.Email, request.Password, cancellationToken);
-        return authResult is null ? BadRequest("Email already exists") : Ok(authResult);
-    }
-
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
@@ -43,4 +36,29 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
         return result ? Ok() : BadRequest("Invalid token/refresh token");
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var authResult = await _authService.RegisterAsync(request, cancellationToken);
+
+        return authResult.IsSuccess
+            ? Ok()
+            : authResult.ToProblem();
+    }
+
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
+    {
+        var authResult = await _authService.ConfirmEmailAsync(request);
+
+        return authResult.IsSuccess ? Ok() : authResult.ToProblem();
+    }
+
+    [HttpPost("resend-confirmation-email")]
+    public async Task<IActionResult> ResendEmailConfirmation([FromBody] ResendEmailConfirmationRequest request)
+    {
+        var authResult = await _authService.ResendEmailConfirmationAsync(request);
+
+        return authResult.IsSuccess ? Ok() : authResult.ToProblem();
+    }
 }

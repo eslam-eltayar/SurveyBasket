@@ -21,7 +21,7 @@ namespace SurveyBasket.Services
             if (!pollIsExist)
                 return Result.Failure<QuestionResponse>(PollErrors.PollNotFound);
 
-            var questionIsExist = await _context.Questions.AnyAsync(x => x.Content == request.Content && x.PollId == pollId);
+            var questionIsExist = await _context.Questions.AnyAsync(x => x.Content == request.Content && x.PollId == pollId, cancellationToken: cancellationToken);
 
             if (questionIsExist)
                 return Result.Failure<QuestionResponse>(QuestionErrors.DuplicatedQuestionContent);
