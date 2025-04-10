@@ -113,7 +113,7 @@ public class AuthService(
         );
     }
 
-   
+
     public async Task<bool> RevokeRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
     {
         var userId = _jwtProvider.ValidateToken(token);
@@ -225,7 +225,7 @@ public class AuthService(
     private string GenerateRefreshToken()
        => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-    private async Task SendConfirmationEmailAsync(ApplicationUser user , string code)
+    private async Task SendConfirmationEmailAsync(ApplicationUser user, string code)
     {
         var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
@@ -233,11 +233,11 @@ public class AuthService(
             new Dictionary<string, string>
             {
                 { "{{name}}",user.FirstName},
-                    {"{{action_url", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}"}
+                { "{{action_url", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}"}
             }
         );
 
-        BackgroundJob.Enqueue(()=> _emailService.SendEmailAsync(user.Email!, "✅ Survey Basket: Email Confirmation", emailBody));
+        BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(user.Email!, "✅ Survey Basket: Email Confirmation", emailBody));
 
         await Task.CompletedTask;
     }
